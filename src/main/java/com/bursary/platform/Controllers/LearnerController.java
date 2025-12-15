@@ -16,6 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import com.bursary.platform.Services.FollowService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/learners")
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 public class LearnerController {
 
     private final LearnerService learnerService;
+    private final FollowService followService;
 
     @PostMapping("/signup")
     @Operation(summary = "Register a new learner", description = "Create a new learner account with email and password")
@@ -126,6 +130,43 @@ public class LearnerController {
         LearnerProfileResponse profileResponse = learnerService.updateProfile(learnerId, updateRequest);
 
         return ResponseEntity.ok(SuccessResponse.ok("Profile updated successfully", profileResponse));
+    }
+
+    @GetMapping("/followers")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @Operation(summary = "Get my followers", description = "Get all providers following the logged-in learner")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Followers retrieved successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
+    public ResponseEntity<SuccessResponse<List<FollowResponse>>> getMyFollowers() {
+        Long learnerId = getCurrentLearnerId();
+        log.info("Fetching followers for learner {}", learnerId);
+
+        List<FollowResponse> followers = followService.getFollowers(learnerId);
+
+        return ResponseEntity.ok(
+                SuccessResponse.ok(
+                        String.format("You have %d followers", followers.size()),
+                        followers
+                )
+        );
+    }
+
+    @GetMapping("/followers/count")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @Operation(summary = "Get follower count", description = "Get total number of providers following this learner")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Count retrieved successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
+    public ResponseEntity<SuccessResponse<Long>> getFollowerCount() {
+        Long learnerId = getCurrentLearnerId();
+        log.info("Getting follower count for learner {}", learnerId);
+
+        long count = followService.getFollowerCount(learnerId);
+
+        return ResponseEntity.ok(SuccessResponse.ok("Follower count retrieved successfully", count));
     }
 
     /**
