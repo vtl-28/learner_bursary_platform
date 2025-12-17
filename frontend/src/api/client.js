@@ -18,12 +18,12 @@ apiClient.interceptors.request.use(
 
     const token = localStorage.getItem(tokenKey);
 
-     console.log('🔐 Axios interceptor:', {
-        url: config.url,
-        isProviderEndpoint,
-        tokenKey,
-        tokenExists: !!token,
-      });
+//     console.log('🔐 Axios interceptor:', {
+//        url: config.url,
+//        isProviderEndpoint,
+//        tokenKey,
+//        tokenExists: !!token,
+//      });
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;

@@ -2,6 +2,7 @@ package com.bursary.platform.Controllers;
 
 import com.bursary.platform.DTOs.FollowLearnerRequest;
 import com.bursary.platform.DTOs.FollowResponse;
+import com.bursary.platform.DTOs.FollowedLearnerResponse;
 import com.bursary.platform.DTOs.SuccessResponse;
 import com.bursary.platform.Services.FollowService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -74,11 +75,11 @@ public class FollowController {
             @ApiResponse(responseCode = "200", description = "Followed learners retrieved successfully"),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    public ResponseEntity<SuccessResponse<List<FollowResponse>>> getFollowedLearners() {
+    public ResponseEntity<SuccessResponse<List<FollowedLearnerResponse>>> getFollowedLearners() {
         Long providerId = getCurrentProviderId();
         log.info("Fetching followed learners for provider {}", providerId);
 
-        List<FollowResponse> follows = followService.getFollowedLearners(providerId);
+        List<FollowedLearnerResponse> follows = followService.getFollowedLearners(providerId);
 
         return ResponseEntity.ok(
                 SuccessResponse.ok(

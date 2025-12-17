@@ -2,6 +2,7 @@ package com.bursary.platform.Services;
 
 import com.bursary.platform.DTOs.FollowLearnerRequest;
 import com.bursary.platform.DTOs.FollowResponse;
+import com.bursary.platform.DTOs.FollowedLearnerResponse;
 import com.bursary.platform.DTOs.LearnerSearchResultResponse;
 import com.bursary.platform.Entities.Learner;
 import com.bursary.platform.Entities.Provider;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -85,19 +87,40 @@ public class FollowService {
      * Get all learners followed by provider
      */
     @Transactional(readOnly = true)
-    public List<FollowResponse> getFollowedLearners(Long providerId) {
+    public List<FollowedLearnerResponse> getFollowedLearners(Long providerId) {
         log.info("Fetching followed learners for provider {}", providerId);
 
         List<ProviderLearnerFollow> follows = followRepository.findByProviderIdOrderByFollowedAtDesc(providerId);
 
+//        return follows.stream()
+//                .map(follow -> {
+//                    Learner learner = learnerRepository.findById(follow.getLearnerId())
+//                            .orElse(null);
+//                    return learner != null ? mapToFollowResponse(follow, learner) : null;
+//                })
+//                .filter(response -> response != null)
+//                .collect(Collectors.toList());
         return follows.stream()
                 .map(follow -> {
                     Learner learner = learnerRepository.findById(follow.getLearnerId())
                             .orElse(null);
-                    return learner != null ? mapToFollowResponse(follow, learner) : null;
+
+                    if (learner == null) return null;
+
+                    return FollowedLearnerResponse.builder()
+                            .id(learner.getId())
+                            .firstName(learner.getFirstName())
+                            .lastName(learner.getLastName())
+                            .schoolName(learner.getSchoolName())
+                            .location(learner.getLocation())
+                            .householdIncome(learner.getHouseholdIncome())
+                            .followId(follow.getId())
+                            .followedAt(follow.getFollowedAt())
+                            .notes(follow.getNotes())
+                            .build();
                 })
-                .filter(response -> response != null)
-                .collect(Collectors.toList());
+                .filter(Objects::nonNull)
+                .toList();
     }
 
     /**

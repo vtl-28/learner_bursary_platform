@@ -63,11 +63,14 @@ public class ProviderSearchService {
                 .orElseThrow(() -> new ResourceNotFoundException("Learner not found with ID: " + learnerId));
 
         // Get academic history
-        List<AcademicYear> academicYears = academicYearRepository.findByLearnerIdOrderByYearDescGradeLevelDesc(learnerId);
+//        List<AcademicYear> academicYears = academicYearRepository.findByLearnerIdOrderByYearDescGradeLevelDesc(learnerId);
+//
+//        List<AcademicYearResponse> academicHistory = academicYears.stream()
+//                .map(this::mapToAcademicYearResponse)
+//                .collect(Collectors.toList());
 
-        List<AcademicYearResponse> academicHistory = academicYears.stream()
-                .map(this::mapToAcademicYearResponse)
-                .collect(Collectors.toList());
+        List<AcademicYearResponse> academicHistory =
+                academicService.getMyAcademicYears(learnerId);
 
         // Check if provider is following and get follow date
         boolean isFollowing = false;

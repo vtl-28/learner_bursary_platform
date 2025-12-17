@@ -18,6 +18,8 @@ import Applications from '@/pages/learner/Applications.jsx';
 import Profile from '@/pages/learner/Profile.jsx';
 import Notifications from '@/pages/learner/Notifications.jsx';
 import ProviderApplications from '@/pages/provider/Applications.jsx';
+import SearchLearners from './pages/provider/SearchLearners.jsx';
+import Following from './pages/provider/Following.jsx';
 
 // Auth Pages
 import LearnerLogin from '@/pages/auth/LearnerLogin.jsx';
@@ -69,8 +71,8 @@ function App() {
         >
           <Route path="dashboard" element={<ProviderDashboard />} />
           <Route path="applications" element={<ProviderApplications />} />
-          <Route path="following" element={<div>Following Page (Coming Soon)</div>} />
-          <Route path="search" element={<div>Search Learners Page (Coming Soon)</div>} />
+          <Route path="search" element={<SearchLearners />} />
+          <Route path="following" element={<Following />} />
           <Route path="notifications" element={<div>Notifications Page (Coming Soon)</div>} />
         </Route>
 

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -9,6 +10,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { FileText, Calendar, DollarSign, Building2, Trash2 } from 'lucide-react';
 import { applicationsAPI } from '@/api/applications';
+import { bursariesAPI } from '@/api/bursaries';
 import { formatCurrency, formatDate, formatRelativeTime } from '@/utils/helpers';
 import { APPLICATION_STATUS, STATUS_COLORS } from '@/utils/constants';
 
@@ -16,6 +18,10 @@ function Applications() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [deletingId, setDeletingId] = useState(null);
+
+  const [selectedBursary, setSelectedBursary] = useState(null);
+  const [isBursaryModalOpen, setIsBursaryModalOpen] = useState(false);
+  const [loadingBursary, setLoadingBursary] = useState(false);
 
   // Fetch all applications
   const { data: applicationsData, isLoading, error } = useQuery({
@@ -28,6 +34,7 @@ function Applications() {
         return { data: [] };
       }
     },
+    refetchInterval: 2000
   });
 
   const applications = applicationsData?.data || [];
@@ -77,6 +84,28 @@ function Applications() {
   const getStatusBadgeClass = (status) => {
     return STATUS_COLORS[status] || 'bg-gray-100 text-gray-800';
   };
+
+const handleViewBursary = async (bursaryId) => {
+  try {
+    setLoadingBursary(true);
+
+    const response = await bursariesAPI.getById(bursaryId);
+    console.log(response?.data);
+
+    setSelectedBursary(response?.data); // or response depending on backend wrapper
+    setIsBursaryModalOpen(true);
+
+  } catch (error) {
+    toast({
+      title: 'Failed to load bursary',
+      description: error?.message || 'Something went wrong',
+      variant: 'destructive',
+    });
+  } finally {
+    setLoadingBursary(false);
+  }
+};
+
 
   // Application Card Component
   const ApplicationCard = ({ application }) => {
@@ -138,10 +167,10 @@ function Applications() {
           </div>
 
           {/* Provider Notes (if any) */}
-          {application?.providerNotes && (
+          {application?.notes && (
             <div className="bg-muted p-3 rounded-lg">
               <p className="text-sm font-medium mb-1">Provider Notes:</p>
-              <p className="text-sm text-muted-foreground">{application.providerNotes}</p>
+              <p className="text-sm text-muted-foreground">{application.notes}</p>
             </div>
           )}
 
@@ -150,10 +179,37 @@ function Applications() {
             <Button
               variant="outline"
               className="flex-1"
-              onClick={() => window.open(`/learner/bursaries`, '_self')}
+              onClick={() => handleViewBursary(bursary?.id)}
+              disabled={loadingBursary}
             >
               View Bursary
             </Button>
+            {isBursaryModalOpen && selectedBursary && (
+              <Dialog open={isBursaryModalOpen} onOpenChange={setIsBursaryModalOpen}>
+                <DialogContent className="max-w-2xl">
+                  <DialogHeader>
+                    <DialogTitle>{selectedBursary.title}</DialogTitle>
+                    <DialogDescription>
+                      {selectedBursary.provider?.organizationName}
+                    </DialogDescription>
+                  </DialogHeader>
+
+                  <div className="space-y-4">
+                    <p><strong>Amount:</strong> {formatCurrency(selectedBursary.amount)}</p>
+                    <p><strong>Description:</strong> {selectedBursary.description}</p>
+                    <p><strong>Application deadline:</strong> {selectedBursary.applicationDeadline}</p>
+
+                    {/* learner-specific info if included */}
+                    {selectedBursary.learner && (
+                      <div>
+                        <h4 className="font-semibold">Your Details</h4>
+                        <p>{selectedBursary.learner.fullName}</p>
+                      </div>
+                    )}
+                  </div>
+                </DialogContent>
+              </Dialog>
+            )}
             {canWithdraw(application?.status) && (
               <Button
                 variant="destructive"
