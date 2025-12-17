@@ -41,15 +41,18 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/api/v1/learners/signup",
-                                "/api/v1/learners/login",
-                                "/api/v1/learners/check-email",
-                                "/api/v1/providers/login",
+                                "/health",
                                 "/actuator/health",
+                                "/api/v1/learners/login",
+                                "/api/v1/learners/register",
+                                "/api/v1/providers/login",
+                                "/api/v1/providers/register",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
                         ).permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**")
+                        .permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception ->
@@ -71,9 +74,8 @@ public class SecurityConfig {
 
         // Allow frontend origins
         configuration.setAllowedOrigins(Arrays.asList(
-                "http://localhost:5173",
-                "http://localhost:3000",
-                "http://localhost:5174"
+                "https://learner-bursary-platform.vercel.app",
+                "http://localhost:5173"
         ));
 
         // Allow credentials (cookies, authorization headers)
@@ -88,10 +90,7 @@ public class SecurityConfig {
         ));
 
         // Expose headers that frontend can read
-        configuration.setExposedHeaders(Arrays.asList(
-                "Authorization",
-                "Content-Type"
-        ));
+        configuration.setExposedHeaders(List.of("Authorization"));
 
         // How long the response from a pre-flight request can be cached
         configuration.setMaxAge(3600L);
