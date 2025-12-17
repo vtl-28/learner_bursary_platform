@@ -13,10 +13,17 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
   (config) => {
     // Determine user type from URL
-    const isProviderEndpoint = config.url.includes('/providers/');
+    const isProviderEndpoint =  config.url.includes('/provider/') || config.url.includes('/providers/');
     const tokenKey = isProviderEndpoint ? STORAGE_KEYS.PROVIDER_TOKEN : STORAGE_KEYS.LEARNER_TOKEN;
 
     const token = localStorage.getItem(tokenKey);
+
+     console.log('🔐 Axios interceptor:', {
+        url: config.url,
+        isProviderEndpoint,
+        tokenKey,
+        tokenExists: !!token,
+      });
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;

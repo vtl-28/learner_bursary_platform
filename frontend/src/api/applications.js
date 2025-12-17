@@ -31,6 +31,7 @@ export const applicationsAPI = {
   getReceivedApplications: async (status = null) => {
     const params = status ? { status } : {};
     const response = await apiClient.get('/applications/provider/received', { params });
+    console.log('Received applications response:', response.data); // ← ADD DEBUG LOG
     return response.data;
   },
 

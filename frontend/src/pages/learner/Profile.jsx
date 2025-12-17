@@ -12,7 +12,7 @@ import { User, GraduationCap, Edit2, Save, X, Plus, Trash2 } from 'lucide-react'
 import { learnerAPI } from '@/api/learner';
 import { academicAPI } from '@/api/academic';
 import { followAPI } from '@/api/follow';
-import { formatCurrency, calculateAverage } from '@/utils/helpers';
+import { formatCurrency, calculateAverage, formatRelativeTime } from '@/utils/helpers';
 import { GRADE_LEVELS, TERM_NUMBERS, COMMON_SUBJECTS } from '@/utils/constants';
 import useAuthStore from '@/lib/stores/authStore';
 

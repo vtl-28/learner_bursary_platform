@@ -10,6 +10,7 @@ const useAuthStore = create((set) => ({
 
   // Actions
   setAuth: (user, token, userType) => {
+  console.log('Setting auth:', { user, token: token?.substring(0, 20) + '...', userType });
     // Save to localStorage
     if (userType === USER_TYPES.LEARNER) {
       localStorage.setItem(STORAGE_KEYS.LEARNER_TOKEN, token);
@@ -18,6 +19,8 @@ const useAuthStore = create((set) => ({
       localStorage.setItem(STORAGE_KEYS.PROVIDER_TOKEN, token);
       localStorage.setItem(STORAGE_KEYS.PROVIDER_USER, JSON.stringify(user));
     }
+
+console.log('Auth saved to localStorage');
 
     // Update state
     set({

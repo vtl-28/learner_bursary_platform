@@ -17,6 +17,7 @@ import BursariesPage from '@/pages/learner/BursariesPage.jsx';
 import Applications from '@/pages/learner/Applications.jsx';
 import Profile from '@/pages/learner/Profile.jsx';
 import Notifications from '@/pages/learner/Notifications.jsx';
+import ProviderApplications from '@/pages/provider/Applications.jsx';
 
 // Auth Pages
 import LearnerLogin from '@/pages/auth/LearnerLogin.jsx';
@@ -67,7 +68,7 @@ function App() {
           }
         >
           <Route path="dashboard" element={<ProviderDashboard />} />
-          <Route path="applications" element={<div>Applications Page (Coming Soon)</div>} />
+          <Route path="applications" element={<ProviderApplications />} />
           <Route path="following" element={<div>Following Page (Coming Soon)</div>} />
           <Route path="search" element={<div>Search Learners Page (Coming Soon)</div>} />
           <Route path="notifications" element={<div>Notifications Page (Coming Soon)</div>} />
