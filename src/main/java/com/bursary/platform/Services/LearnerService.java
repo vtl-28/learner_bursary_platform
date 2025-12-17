@@ -7,13 +7,10 @@ import com.bursary.platform.Repositories.LearnerRepository;
 import com.bursary.platform.Security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.regex.Pattern;
 
 @Service
@@ -24,6 +21,7 @@ public class LearnerService {
     private final LearnerRepository learnerRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
             "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
@@ -78,14 +76,12 @@ public class LearnerService {
      */
     @Transactional(readOnly = true)
     public LearnerAuthResponse login(LoginRequest request) {
+
         log.info("Login attempt for email: {}", request.getEmail());
 
         Learner learner = learnerRepository.findByEmailIgnoreCase(request.getEmail())
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid email or password"));
 
-//        if (!learner.isActive()) {
-//            throw new InvalidCredentialsException("Account is deactivated");
-//        }
 
         if (!passwordEncoder.matches(request.getPassword(), learner.getPasswordHash())) {
             throw new InvalidCredentialsException("Invalid email or password");

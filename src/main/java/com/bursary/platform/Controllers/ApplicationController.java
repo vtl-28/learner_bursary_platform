@@ -1,6 +1,10 @@
 package com.bursary.platform.Controllers;
 
 import com.bursary.platform.DTOs.*;
+import com.bursary.platform.Entities.Learner;
+import com.bursary.platform.Exceptions.ResourceNotFoundException;
+import com.bursary.platform.Exceptions.UnauthorizedException;
+import com.bursary.platform.Repositories.LearnerRepository;
 import com.bursary.platform.Services.ApplicationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -27,6 +31,7 @@ import java.util.List;
 public class ApplicationController {
 
     private final ApplicationService applicationService;
+    private final LearnerRepository learnerRepository;
 
     @PostMapping
     @Operation(summary = "Apply for a bursary", description = "Submit an application for a specific bursary")
@@ -219,6 +224,7 @@ public class ApplicationController {
      */
     private Long getCurrentLearnerId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         return (Long) authentication.getPrincipal();
     }
 }

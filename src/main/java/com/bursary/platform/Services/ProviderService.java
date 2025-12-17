@@ -19,6 +19,7 @@ public class ProviderService {
     private final ProviderRepository providerRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
+
     /**
      * Provider login (plain text password comparison for hackathon)
      */
