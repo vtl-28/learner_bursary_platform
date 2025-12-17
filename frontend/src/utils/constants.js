@@ -1,5 +1,5 @@
 // API Base URL
-export const API_BASE_URL = 'http://localhost:8181/api/v1';
+export const API_BASE_URL = 'https://learner-bursary-platform.onrender.com/api/v1';
 
 // Local Storage Keys
 export const STORAGE_KEYS = {

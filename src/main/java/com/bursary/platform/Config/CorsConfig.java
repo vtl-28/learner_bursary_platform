@@ -16,7 +16,7 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         // Allow frontend origin
-        config.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:3000"));
+        config.setAllowedOrigins(Arrays.asList("https://learnerbursaryhub.vercel.app", "http://localhost:5173", "http://localhost:3000"));
 
         // Allow credentials (for cookies/auth headers)
         config.setAllowCredentials(true);
