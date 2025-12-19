@@ -4,7 +4,6 @@
 
 This application is a two-sided platform designed to connect learners with bursary providers. It helps learners discover bursaries they qualify for and manage applications, while enabling bursary providers to find eligible students, post bursaries and manage funding pipelines.
 
-The platform focuses on: - Secure authentication (Email & Password) - Intelligent matching and recommendations - A digital Academic Passport for learners - Transparent application tracking and communication
 
 ---
 # 🧩 Problem Statement
